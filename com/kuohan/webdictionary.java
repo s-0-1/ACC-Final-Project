@@ -1,4 +1,4 @@
-package com.kuohan;
+package kuodictionary;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -6,7 +6,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,15 +33,13 @@ public class webdictionary {
 
 	public String transformWebToText(String theURL, String txtName)
 	{
-		//String txtName = "";  //String get from file
-		Document doc;
+		org.jsoup.nodes.Document doc;
 		try {
 			doc = Jsoup.connect(theURL).get();
 			String text = doc.text();
 			//System.out.println(text);
-			//txtName = theURL.replaceAll("[\\n`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/???~??@#??%????&*??????+|{}???????????????????? ????\\\"??-]", "+") + ".txt";
-			
-			PrintWriter out = new PrintWriter("TemporaryFolder\\"+txtName);
+			txtName = "TemporaryFolder\\"+txtName;
+			PrintWriter out = new PrintWriter(txtName);
 			out.println(text);
 			out.close();
 		} catch (IOException e) {
@@ -60,9 +61,9 @@ public class webdictionary {
 			Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
 			String text = doc.text();
 			System.out.println("The contents of the HTML file:\n" + text + "\n");
-			PrintWriter out = new PrintWriter(fileName + ".txt");
+			//PrintWriter out = new PrintWriter(fileName + ".txt");
 			//out.println(text);
-			out.close();
+			//out.close();
 			
 		     // Write the text to a file  
 		    File tempFile =new File( fileName.trim());  
@@ -84,7 +85,7 @@ public class webdictionary {
 	
 	public void createFolder(String folderName)
 	{
-		File file = new File(folderName);// ???? File file = new File("D:\\123.txt");
+		File file = new File(folderName);// ���� File file = new File("D:\\123.txt");
 		
 		if(file.mkdirs()) {
 			return;
@@ -110,6 +111,7 @@ public class webdictionary {
 			//System.out.println("Deleting "+file.getName());
 			file.delete();
 		}
+		dir.delete();
 		//now directory is empty, so we can delete it
 		//System.out.println("Deleting Directory. Success = "+dir.delete());
 		
@@ -125,16 +127,16 @@ public class webdictionary {
 	     
 		String allLines = "";
         try {
-            //System.out.println("Read the contents of the file in line, one line at a time??");
+            //System.out.println("Read the contents of the file in line, one line at a time��");
         	File file = new File(fileName);
 	        
 	        BufferedReader reader = null;
             reader = new BufferedReader(new FileReader(file));
             String tempString = null;
             int line = 1;
-            // ??ζ?????У????????null????????
+            // һ�ζ���һ�У�ֱ������nullΪ�ļ�����
             while ((tempString = reader.readLine()) != null) {
-                // ????к?
+                // ��ʾ�к�
                 //System.out.println("line " + line + ": " + tempString);
                 allLines = allLines +" "+ tempString;
                 line++;
@@ -199,7 +201,7 @@ public class webdictionary {
 	{
 		//1.Remove special characters, such as ", ". !"
 		//1) You can enclose the brackets with any character you want to remove, which is actually a regular expression
-		String regExp="[\n`~!@#$%^&*()+=|{}':;',\\[\\].<>/???~??@#??%????&*??????+|{}???????????????????? ????\"??-]";
+		String regExp="[\n`~!@#$%^&*()+=|{}':;',\\[\\].<>/?→~！@#￥%……&*（）—+|{}【】‘；：”“’。， 、？\"•·-]";
 		//2) In this case, the special character is replaced with an empty string, and the "" means to remove it directly
 		String replace = " ";
 		//3) The string to process
@@ -217,7 +219,7 @@ public class webdictionary {
 		//3.Converts all uppercase letters to lowercase
 		list = list.stream().map(String::toLowerCase).collect(Collectors.toList());
 		/*for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i));// ????get(int index)??????????????λ??????
+			System.out.println(list.get(i));// ����get(int index)�������ָ������λ�õĶ���
 			}*/
 		//System.out.println(list);
 		
@@ -261,25 +263,25 @@ public class webdictionary {
 			map.put(treeWords.get(i), sum);
 		}
 
-		 //???entrySet
+		 //��ȡentrySet
         Set<Map.Entry<String, Integer>> mapEntries = map.entrySet();
 
-        //????????????????????????LinkedList????????????
+        //ʹ���������Լ��Ͻ�������ʹ��LinkedList�����ڲ���Ԫ��
         List<Map.Entry<String, Integer>> result = new LinkedList<>(mapEntries);
-        //???????????????????е????
+        //�Զ���Ƚ������Ƚ������е�Ԫ��
         Collections.sort(result, new Comparator<Map.Entry<String, Integer>>() {
-            //????entry?????Entry.getValue()??????????????????
+            //����entry��ֵ��Entry.getValue()������������������
             @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                 return o2.getValue().compareTo(o1.getValue());
             }
         });
 
-        //???????????LinkedHashMap(????????)?У?????洢??????????????????С?
+        //���ź���Ĵ��뵽LinkedHashMap(�ɱ���˳��)�У���Ҫ�洢����ֵ��Ϣ�Ե��µ�ӳ���С�
         //Integer sort = 1;
         Map<String, Integer> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> newEntry : result) {
-            // ????????5???
+            // ȡ������ǰ5��ֵ
             //if (sort <= 5) {
                 sortedMap.put(newEntry.getKey(), newEntry.getValue());
                 //++sort;
@@ -294,7 +296,7 @@ public class webdictionary {
 		word = word.toLowerCase();
 		if (t.contains( word ))
 		{
-			System.out.println("key: " + word + " - exist in this dictionary" );
+			System.out.println("key: " + word + " - exist in this file" );
 		}
 		else
 		{
@@ -316,11 +318,11 @@ public class webdictionary {
 		return allWords;
 	}
 	
-	//Create an avltree using an array of strings = ???????String??????????????? 
+	//Create an avltree using an array of strings = ����һ��String����������һ���� 
 	public AVLTree<String> wordsToTree(String[] allWords)
 	{
 		
-		//create tree??????
+		//create tree������
 		AVLTree<String> avltree = new AVLTree<>( );
 		avlTree(allWords, avltree);
 		//avltree.printTree();
@@ -360,7 +362,7 @@ public class webdictionary {
 	//
 	public Integer returnFrequencyOfAWord(String txtName, String word)
 	{
-		//create tree??????
+		//create tree������
 		String[] allWords =  gotTxtAllWords(txtName);
 		AVLTree<String> avltree = wordsToTree(allWords);
 		//System.out.println("Words contained in the dictionary:\n"+avltree.treeToList()+"\n");
@@ -417,7 +419,7 @@ public class webdictionary {
 			return;
 		}
 		
-		//create tree??????
+		//create tree������
 		System.out.println( "Creating the Dictionary..." );
 		String[] allWords =  gotTxtAllWords(txtName);
 		AVLTree<String> avltree = wordsToTree(allWords);
@@ -425,7 +427,7 @@ public class webdictionary {
 		//List<String> treeWords = t.treeToList(); 
 		
 		Map<String, Integer> map = treeToSortedMap(allWords, avltree);
-		System.out.println("Top 10 words frequency in the dictionary:");
+		System.out.println("Top 10 most frequent words in the file:");
 		printMapContent(map,10);
 		
 		if(fileType.equals("1")||fileType.equals("webpage"))
